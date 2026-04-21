@@ -1,31 +1,58 @@
 <?php if ($withOrders): ?>
 
-<ul class="orders-list">
+<p><a href="/customers">Back to list</a></p>
+<ul>
     <?php foreach ($customers as $c): ?>
-    <li class="orders-customer">
+    <li>
         <strong><?= htmlspecialchars($c['first_name'] . ' ' . $c['last_name']) ?></strong>
-        <span class="email"><?= htmlspecialchars($c['email']) ?></span>
-        <?php if (!empty($c['orders'])): ?>
-        <ul class="orders-items">
-            <?php foreach ($c['orders'] as $o): ?>
-            <li>
-                <span class="order-id">#<?= (int)$o['id'] ?></span>
-                <span class="badge"><?= htmlspecialchars($o['status'] ?? 'unknown') ?></span>
-                <span><?= htmlspecialchars($o['order_date'] ?? '') ?></span>
-                <span><?= htmlspecialchars($o['delivery_date'] ?? '') ?></span>
-                <?php if ($o['comment']): ?>
-                    <span style="opacity:0.6;font-size:12px"><?= htmlspecialchars($o['comment']) ?></span>
-                <?php endif; ?>
-            </li>
-            <?php endforeach; ?>
+        (<?= htmlspecialchars($c['email']) ?>)
+        <ul>
+            <?php if (!empty($c['orders'])): ?>
+                <?php foreach ($c['orders'] as $o): ?>
+                <li>
+                    #<?= (int)$o['id'] ?> —
+                    <?= htmlspecialchars($o['status'] ?? '—') ?> —
+                    <?= htmlspecialchars($o['order_date'] ?? '—') ?>
+                </li>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <li>No orders</li>
+            <?php endif; ?>
         </ul>
-        <?php else: ?>
-            <ul><li><em>No orders</em></li></ul>
-        <?php endif; ?>
     </li>
     <?php endforeach; ?>
 </ul>
 
 <?php else: ?>
-    <?php /* ... your existing card grid code ... */ ?>
+
+<form method="GET" action="/customers" style="margin-bottom:16px">
+    <input type="text" name="q" value="<?= htmlspecialchars($search) ?>" placeholder="Search…">
+    <button type="submit">Search</button>
+    <a href="/customers?with-orders=full">Show with orders</a>
+</form>
+
+<form method="POST" action="/customers/add" style="margin-bottom:16px">
+    <input type="text"  name="first_name" placeholder="First name" required>
+    <input type="text"  name="last_name"  placeholder="Last name"  required>
+    <input type="email" name="email"      placeholder="Email"      required>
+    <button type="submit">Add</button>
+</form>
+
+<table>
+    <thead>
+        <tr><th>#</th><th>Name</th><th>Email</th><th></th></tr>
+    </thead>
+    <tbody>
+        <?php foreach ($customers as $c): ?>
+        <tr>
+            <td><?= (int)$c['id'] ?></td>
+            <td><?= htmlspecialchars($c['first_name'] . ' ' . $c['last_name']) ?></td>
+            <td><?= htmlspecialchars($c['email']) ?></td>
+            <td><a href="/customers/delete?id=<?= (int)$c['id'] ?>"
+                   onclick="return confirm('Delete?')">Delete</a></td>
+        </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
+
 <?php endif; ?>

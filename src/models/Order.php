@@ -1,44 +1,35 @@
 <?php
-require_once __DIR__ . '/../../db/DB.php';
-
 class Order
 {
-    public static function paginated(string $search, string $sort, int $page, int $perPage): array
+    public static function all(string $status = ''): array
     {
-        $pdo    = DB::$pdo;
-        $offset = ($page - 1) * $perPage;
-        $like   = '%' . $pdo->real_escape_string($search) . '%';
-        $where  = $search
-            ? "WHERE o.status LIKE '$like' OR o.comment LIKE '$like' OR CONCAT(c.first_name,' ',c.last_name) LIKE '$like'"
-            : '';
-
+        $where = '';
+        if ($status) {
+            $s     = DB::$pdo->real_escape_string($status);
+            $where = "WHERE o.status = '$s'";
+        }
         $result = DB::query("
             SELECT o.*, CONCAT(c.first_name, ' ', c.last_name) AS customer_name
             FROM orders o
             LEFT JOIN customers c ON c.id = o.customer_id
             $where
-            ORDER BY $sort ASC
-            LIMIT $offset, $perPage
+            ORDER BY o.order_date DESC
         ");
-
         $rows = [];
         while ($row = $result->fetch_assoc()) $rows[] = $row;
         return $rows;
     }
 
-    public static function count(string $search): int
+    public static function count(): int
     {
-        $pdo   = DB::$pdo;
-        $like  = '%' . $pdo->real_escape_string($search) . '%';
-        $where = $search
-            ? "WHERE o.status LIKE '$like' OR o.comment LIKE '$like' OR CONCAT(c.first_name,' ',c.last_name) LIKE '$like'"
-            : '';
+        return (int)DB::query("SELECT COUNT(*) AS n FROM orders")->fetch_assoc()['n'];
+    }
 
-        return (int)DB::query("
-            SELECT COUNT(*) AS n
-            FROM orders o
-            LEFT JOIN customers c ON c.id = o.customer_id
-            $where
-        ")->fetch_assoc()['n'];
+    public static function statuses(): array
+    {
+        $result = DB::query("SELECT DISTINCT status FROM orders WHERE status IS NOT NULL ORDER BY status");
+        $rows = [];
+        while ($row = $result->fetch_assoc()) $rows[] = $row['status'];
+        return $rows;
     }
 }
