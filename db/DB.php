@@ -4,19 +4,13 @@ class DB
 {
     public static $pdo;
 
-    public static function connect()
+    public static function connect(): void
     {
-        $servername = "172.30.224.1";
-        $username = "store_app";
-        $password = "password";
-        $dbname = "store_dev";
-
-        self::$pdo = new mysqli($servername, $username, $password, $dbname);
-
+        $cfg = require __DIR__ . '/../config.php';
+        self::$pdo = new mysqli($cfg['db_host'], $cfg['db_user'], $cfg['db_pass'], $cfg['db_name']);
         if (self::$pdo->connect_error) {
             die("Connection failed: " . self::$pdo->connect_error);
         }
-
         self::$pdo->set_charset("utf8mb4");
     }
 

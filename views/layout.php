@@ -193,7 +193,7 @@ function layout($title, $content, $flash = null)
 </head>
 <body>
 <header>
-    <h1>&#9749; Veikals</h1>
+    <h1>🧍‍♂️ Veikals</h1>
     <nav>
         <a href="/customers">Klienti</a>
     </nav>
