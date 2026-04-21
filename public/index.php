@@ -12,35 +12,3 @@ if ($requestUri === '/customers') {
 } else {
     echo "<h1>Veikals</h1>";
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
