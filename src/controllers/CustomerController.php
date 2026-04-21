@@ -15,7 +15,7 @@ class CustomerController
         $page   = max(1, (int)($_GET['page'] ?? 1));
         $offset = ($page - 1) * self::$perPage;
 
-        $like = '%' . self::$pdo()->real_escape_string($search) . '%';
+        $like = '%' . self::getPdo()->real_escape_string($search) . '%';
         $where = $search
             ? "WHERE CONCAT(first_name,' ',last_name) LIKE '$like' OR email LIKE '$like'"
             : '';
@@ -141,20 +141,31 @@ class CustomerController
     }
 
     public static function delete(): void
-    {
-        $id = (int)($_GET['id'] ?? 0);
-        if ($id > 0) {
-            $stmt = self::getPdo()->prepare("DELETE FROM customers WHERE id = ?");
+{
+    $id = (int)($_GET['id'] ?? 0);
+    if ($id > 0) {
+        $pdo = self::getPdo();
+
+        $check = $pdo->prepare("SELECT COUNT(*) AS n FROM orders WHERE customer_id = ?");
+        $check->bind_param('i', $id);
+        $check->execute();
+        $count = $check->get_result()->fetch_assoc()['n'];
+
+        if ($count > 0) {
+            self::setFlash('error', "Cannot delete — this customer has $count order(s) on record.");
+        } else {
+            $stmt = $pdo->prepare("DELETE FROM customers WHERE id = ?");
             $stmt->bind_param('i', $id);
             $stmt->execute();
             self::setFlash('success', 'Customer deleted.');
         }
-        $q    = urlencode($_GET['q']   ?? '');
-        $sort = urlencode($_GET['sort'] ?? 'first_name');
-        $page = (int)($_GET['page'] ?? 1);
-        header("Location: /customers?q=$q&sort=$sort&page=$page");
-        exit;
     }
+    $q    = urlencode($_GET['q']    ?? '');
+    $sort = urlencode($_GET['sort'] ?? 'first_name');
+    $page = (int)($_GET['page']     ?? 1);
+    header("Location: /customers?q=$q&sort=$sort&page=$page");
+    exit;
+}
 
     private static function getPdo(): mysqli
     {
