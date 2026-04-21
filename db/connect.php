@@ -9,5 +9,26 @@ $pdo = new mysqli($servername, $username, $password, $dbname);
 if ($pdo->connect_error) {
   die("Connection failed: " . $pdo->connect_error);
 }
-echo "Connected successfully";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ?>
