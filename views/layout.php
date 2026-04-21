@@ -207,8 +207,9 @@ function layout($title, $content, $flash = null)
 <header>
     <h1>🧍‍♂️ Veikals</h1>
     <nav>
-        <a href="/customers">Klienti</a>
-    </nav>
+    <a href="/customers">Klienti</a>
+    <a href="/orders">Pasūtījumi</a>
+</nav>
 </header>
 <div class="container">
     <?php if ($flash): ?>
