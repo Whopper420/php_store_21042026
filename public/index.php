@@ -14,11 +14,13 @@ $uri    = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $method = $_SERVER['REQUEST_METHOD'];
 
 match (true) {
-    $uri === '/'                                    => HomeController::index(),
-    $uri === '/customers' && $method === 'GET'      => CustomerController::index(),
-    $uri === '/customers/add' && $method === 'POST' => CustomerController::add(),
-    $uri === '/customers/delete'                    => CustomerController::delete(),
-    $uri === '/orders' && $method === 'GET'         => OrderController::index(),
+    $uri === '/'                                       => HomeController::index(),
+    $uri === '/customers' && $method === 'GET'         => CustomerController::index(),
+    $uri === '/customers/add' && $method === 'POST'    => CustomerController::add(),
+    $uri === '/customers/delete'                       => CustomerController::delete(),
+    $uri === '/orders' && $method === 'GET'            => OrderController::index(),
+    $uri === '/orders/create' && $method === 'GET'     => OrderController::create(),
+    $uri === '/orders/store' && $method === 'POST'     => OrderController::store(),
     default => (function() {
         echo "<p>404 — page not found</p>";
     })()

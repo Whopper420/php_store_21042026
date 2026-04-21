@@ -32,4 +32,14 @@ class Order
         while ($row = $result->fetch_assoc()) $rows[] = $row['status'];
         return $rows;
     }
+
+    public static function create(int $customerId, string $orderDate, string $deliveryDate, string $status, string $comment): bool
+    {
+        $stmt = DB::$pdo->prepare("
+            INSERT INTO orders (customer_id, order_date, delivery_date, status, comment)
+            VALUES (?, ?, ?, ?, ?)
+        ");
+        $stmt->bind_param('issss', $customerId, $orderDate, $deliveryDate, $status, $comment);
+        return $stmt->execute();
+    }
 }
