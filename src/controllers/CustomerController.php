@@ -1,36 +1,37 @@
 <?php
 require_once __DIR__ . '/../../db/DB.php';
+require_once __DIR__ . '/../../src/models/Customer.php';
 require_once __DIR__ . '/../../views/layout.php';
 
 class CustomerController
 {
     private static int $perPage = 9;
 
-    public static function index(): void
+   public static function index(): void
     {
-        $flash = self::getFlash();
+        $flash      = self::getFlash();
+        $search     = trim($_GET['q'] ?? '');
+        $sort       = in_array($_GET['sort'] ?? '', ['first_name', 'email']) ? $_GET['sort'] : 'first_name';
+        $page       = max(1, (int)($_GET['page'] ?? 1));
+        $withOrders = ($_GET['with-orders'] ?? '') === 'full';
 
-        $search = trim($_GET['q'] ?? '');
-        $sort   = in_array($_GET['sort'] ?? '', ['first_name', 'email']) ? $_GET['sort'] : 'first_name';
-        $page   = max(1, (int)($_GET['page'] ?? 1));
-        $offset = ($page - 1) * self::$perPage;
-
-        $like = '%' . self::getPdo()->real_escape_string($search) . '%';
-        $where = $search
-            ? "WHERE CONCAT(first_name,' ',last_name) LIKE '$like' OR email LIKE '$like'"
-            : '';
-
-        $total  = self::getPdo()->query("SELECT COUNT(*) AS n FROM customers $where")->fetch_assoc()['n'];
-        $pages  = max(1, (int)ceil($total / self::$perPage));
-        $page   = min($page, $pages);
-
-        $result = DB::query("SELECT * FROM customers $where ORDER BY $sort ASC LIMIT $offset, " . self::$perPage);
-        $customers = [];
-        while ($row = $result->fetch_assoc()) {
-            $customers[] = $row;
+        if ($withOrders) {
+            $customers = Customer::allWithOrders($search, $sort);
+            $total     = count($customers);
+            $pages     = 1;
+        } else {
+            $total     = Customer::count($search);
+            $pages     = max(1, (int)ceil($total / self::$perPage));
+            $page      = min($page, $pages);
+            $customers = Customer::paginated($search, $sort, $page, self::$perPage);
         }
 
-        ob_start(); ?>
+        ob_start();
+        require __DIR__ . '/../../views/customers.php';;
+        $content = ob_get_clean();
+
+        layout('Klienti', $content, $flash);
+    ?>
 
         <div class="stats">
             <div class="stat-card">

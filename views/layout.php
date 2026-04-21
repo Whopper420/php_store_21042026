@@ -189,6 +189,18 @@ function layout($title, $content, $flash = null)
         }
         .empty { text-align: center; opacity: 0.5; padding: 60px 0; font-size: 15px; }
         footer { text-align: center; padding: 30px; opacity: 0.4; font-size: 12px; }
+        .orders-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 14px; }
+        .orders-customer {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 14px;
+            padding: 16px 20px;
+        }
+        .orders-customer > strong { font-size: 16px; margin-right: 10px; }
+        .orders-customer > .email { font-size: 13px; opacity: 0.6; }
+        .orders-items { margin: 10px 0 0; padding-left: 16px; display: flex; flex-direction: column; gap: 6px; }
+        .orders-items li { display: flex; gap: 12px; align-items: center; font-size: 13px; }
+.order-id { font-weight: 600; color: #38bdf8; }
     </style>
 </head>
 <body>
