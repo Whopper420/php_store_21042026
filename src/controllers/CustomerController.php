@@ -1,10 +1,12 @@
 <?php
 
+require_once __DIR__ . '/../../db/DB.php';
+
 class CustomerController
 {
     public static function index($pdo)
     {
-        $result = query("SELECT * FROM customers");
+        $result = DB::query("SELECT * FROM customers");
 
         echo "<h1>Klienti</h1>";
 
@@ -13,5 +15,3 @@ class CustomerController
         }
     }
 }
-
-
