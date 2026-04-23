@@ -61,4 +61,17 @@ class Order
         $stmt->bind_param('issss', $customerId, $orderDate, $deliveryDate, $status, $comment);
         return $stmt->execute();
     }
+    public static function allRaw(): array
+    {
+        $result = DB::query("
+            SELECT o.id, o.order_date, o.delivery_date, o.status, o.comment,
+                CONCAT(c.first_name, ' ', c.last_name) AS customer_name
+            FROM orders o
+            LEFT JOIN customers c ON c.id = o.customer_id
+            ORDER BY o.order_date DESC
+        ");
+        $rows = [];
+        while ($row = $result->fetch_assoc()) $rows[] = $row;
+        return $rows;
+    }
 }

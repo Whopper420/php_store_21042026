@@ -17,13 +17,15 @@ class CustomerController
 
     public static function add(): void
     {
-        $first = trim($_POST['first_name'] ?? '');
-        $last  = trim($_POST['last_name']  ?? '');
-        $email = trim($_POST['email']      ?? '');
+        $first     = trim($_POST['first_name'] ?? '');
+        $last      = trim($_POST['last_name']  ?? '');
+        $email     = trim($_POST['email']      ?? '');
+        $birthDate = trim($_POST['birth_date'] ?? '');
+        $points    = (int)($_POST['points']    ?? 0);
 
         if (!$first || !$last || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
             self::setFlash('error', 'Invalid data.');
-        } elseif (Customer::add($first, $last, $email)) {
+        } elseif (Customer::add($first, $last, $email, $birthDate, $points)) {
             self::setFlash('success', "Customer $first $last added!");
         } else {
             self::setFlash('error', 'Could not add customer.');

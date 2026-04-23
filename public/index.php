@@ -7,6 +7,7 @@ require __DIR__ . '/../src/controllers/HomeController.php';
 require __DIR__ . '/../src/controllers/CustomerController.php';
 require __DIR__ . '/../src/controllers/OrderController.php';
 require __DIR__ . '/../views/layout.php';
+require __DIR__ . '/../src/controllers/ExportController.php';
 
 DB::connect();
 
@@ -21,6 +22,8 @@ match (true) {
     $uri === '/orders' && $method === 'GET'            => OrderController::index(),
     $uri === '/orders/create' && $method === 'GET'     => OrderController::create(),
     $uri === '/orders/store' && $method === 'POST'     => OrderController::store(),
+    $uri === '/export/customers' => ExportController::customers(),
+    $uri === '/export/orders'    => ExportController::orders(),
     default => (function() {
         echo "<p>404 — page not found</p>";
     })()

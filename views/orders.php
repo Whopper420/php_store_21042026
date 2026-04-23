@@ -1,4 +1,5 @@
 <p><a href="/orders/create">+ New order</a></p>
+<a href="/export/orders">Export CSV</a>
 
 <form method="GET" action="/orders" style="margin-bottom:16px">
     <select name="status" onchange="this.form.submit()">

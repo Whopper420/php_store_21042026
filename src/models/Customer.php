@@ -6,6 +6,8 @@ class Customer
     public string $last_name;
     public string $email;
     public array $orders = [];
+    public ?string $birth_date;
+    public int $points;
 
     public function __construct(array $row)
     {
@@ -13,6 +15,8 @@ class Customer
         $this->first_name = $row['first_name'];
         $this->last_name  = $row['last_name'];
         $this->email      = $row['email'];
+        $this->birth_date = $row['birth_date'] ?? null;
+        $this->points     = (int)($row['points'] ?? 0);
     }
 
     public function fullName(): string
@@ -67,10 +71,14 @@ class Customer
         return (int)DB::query("SELECT COUNT(*) AS n FROM customers")->fetch_assoc()['n'];
     }
 
-    public static function add(string $first, string $last, string $email): bool
+    public static function add(string $first, string $last, string $email, string $birthDate = '', int $points = 0): bool
     {
-        $stmt = DB::$pdo->prepare("INSERT INTO customers (first_name, last_name, email) VALUES (?, ?, ?)");
-        $stmt->bind_param('sss', $first, $last, $email);
+        $bd   = $birthDate ?: null;
+        $stmt = DB::$pdo->prepare("
+            INSERT INTO customers (first_name, last_name, email, birth_date, points)
+            VALUES (?, ?, ?, ?, ?)
+        ");
+        $stmt->bind_param('ssssi', $first, $last, $email, $bd, $points);
         return $stmt->execute();
     }
 
@@ -87,5 +95,12 @@ class Customer
         $stmt->bind_param('i', $id);
         $stmt->execute();
         return (int)$stmt->get_result()->fetch_assoc()['n'] > 0;
+    }
+    public static function allRaw(): array
+    {
+        $result = DB::query("SELECT * FROM customers ORDER BY first_name ASC");
+        $rows = [];
+        while ($row = $result->fetch_assoc()) $rows[] = $row;
+        return $rows;
     }
 }
