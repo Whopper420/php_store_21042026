@@ -33,7 +33,7 @@ function layout(string $title, string $content, ?array $flash = null): void
     <p class="flash-<?= htmlspecialchars($flash['type']) ?>"><?= htmlspecialchars($flash['msg']) ?></p>
 <?php endif; ?>
 <?= $content ?>
-<footer>i just hit the jackpot!!!</footer>
+<footer><a href="https://youtu.be/dQw4w9WgXcQ">i just hit the jackpot!!!</a></footer>
 </body>
 </html>
 <?php }
