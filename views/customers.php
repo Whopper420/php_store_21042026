@@ -4,15 +4,15 @@
 <ul>
     <?php foreach ($customers as $c): ?>
     <li>
-        <strong><?= htmlspecialchars($c['first_name'] . ' ' . $c['last_name']) ?></strong>
-        (<?= htmlspecialchars($c['email']) ?>)
+        <strong><?= htmlspecialchars($c->fullName()) ?></strong>
+        (<?= htmlspecialchars($c->email) ?>)
         <ul>
-            <?php if (!empty($c['orders'])): ?>
-                <?php foreach ($c['orders'] as $o): ?>
+            <?php if (!empty($c->orders)): ?>
+                <?php foreach ($c->orders as $o): ?>
                 <li>
-                    #<?= (int)$o['id'] ?> —
-                    <?= htmlspecialchars($o['status'] ?? '—') ?> —
-                    <?= htmlspecialchars($o['order_date'] ?? '—') ?>
+                    #<?= $o->id ?> —
+                    <?= htmlspecialchars($o->status ?? '—') ?> —
+                    <?= htmlspecialchars($o->order_date ?? '—') ?>
                 </li>
                 <?php endforeach; ?>
             <?php else: ?>
@@ -45,10 +45,10 @@
     <tbody>
         <?php foreach ($customers as $c): ?>
         <tr>
-            <td><?= (int)$c['id'] ?></td>
-            <td><?= htmlspecialchars($c['first_name'] . ' ' . $c['last_name']) ?></td>
-            <td><?= htmlspecialchars($c['email']) ?></td>
-            <td><a href="/customers/delete?id=<?= (int)$c['id'] ?>"
+            <td><?= $c->id ?></td>
+            <td><?= htmlspecialchars($c->fullName()) ?></td>
+            <td><?= htmlspecialchars($c->email) ?></td>
+            <td><a href="/customers/delete?id=<?= $c->id ?>"
                    onclick="return confirm('Delete?')">Delete</a></td>
         </tr>
         <?php endforeach; ?>

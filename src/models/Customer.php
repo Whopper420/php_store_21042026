@@ -1,20 +1,39 @@
 <?php
 class Customer
 {
+    public int $id;
+    public string $first_name;
+    public string $last_name;
+    public string $email;
+    public array $orders = [];
+
+    public function __construct(array $row)
+    {
+        $this->id         = (int)$row['id'];
+        $this->first_name = $row['first_name'];
+        $this->last_name  = $row['last_name'];
+        $this->email      = $row['email'];
+    }
+
+    public function fullName(): string
+    {
+        return $this->first_name . ' ' . $this->last_name;
+    }
+
     public static function all(string $search = ''): array
     {
-        $like  = '%' . DB::$pdo->real_escape_string($search) . '%';
-        $where = $search ? "WHERE CONCAT(first_name,' ',last_name) LIKE '$like' OR email LIKE '$like'" : '';
+        $like   = '%' . DB::$pdo->real_escape_string($search) . '%';
+        $where  = $search ? "WHERE CONCAT(first_name,' ',last_name) LIKE '$like' OR email LIKE '$like'" : '';
         $result = DB::query("SELECT * FROM customers $where ORDER BY first_name ASC");
-        $rows = [];
-        while ($row = $result->fetch_assoc()) $rows[] = $row;
+        $rows   = [];
+        while ($row = $result->fetch_assoc()) $rows[] = new self($row);
         return $rows;
     }
 
     public static function allWithOrders(string $search = ''): array
     {
-        $like  = '%' . DB::$pdo->real_escape_string($search) . '%';
-        $where = $search ? "WHERE CONCAT(c.first_name,' ',c.last_name) LIKE '$like' OR c.email LIKE '$like'" : '';
+        $like   = '%' . DB::$pdo->real_escape_string($search) . '%';
+        $where  = $search ? "WHERE CONCAT(c.first_name,' ',c.last_name) LIKE '$like' OR c.email LIKE '$like'" : '';
         $result = DB::query("
             SELECT c.id, c.first_name, c.last_name, c.email,
                    o.id AS order_id, o.status, o.order_date, o.delivery_date, o.comment
@@ -25,24 +44,19 @@ class Customer
         ");
         $map = [];
         while ($row = $result->fetch_assoc()) {
-            $cid = $row['id'];
+            $cid = (int)$row['id'];
             if (!isset($map[$cid])) {
-                $map[$cid] = [
-                    'id'         => $cid,
-                    'first_name' => $row['first_name'],
-                    'last_name'  => $row['last_name'],
-                    'email'      => $row['email'],
-                    'orders'     => [],
-                ];
+                $map[$cid] = new self($row);
             }
             if ($row['order_id']) {
-                $map[$cid]['orders'][] = [
+                $map[$cid]->orders[] = new Order([
                     'id'            => $row['order_id'],
+                    'customer_id'   => $cid,
                     'status'        => $row['status'],
                     'order_date'    => $row['order_date'],
                     'delivery_date' => $row['delivery_date'],
                     'comment'       => $row['comment'],
-                ];
+                ]);
             }
         }
         return array_values($map);

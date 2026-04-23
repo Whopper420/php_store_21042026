@@ -8,8 +8,8 @@
                 <select name="customer_id" required>
                     <option value="">— select customer —</option>
                     <?php foreach ($customers as $c): ?>
-                    <option value="<?= (int)$c['id'] ?>">
-                        <?= htmlspecialchars($c['first_name'] . ' ' . $c['last_name']) ?>
+                    <option value="<?= $c->id ?>">
+                        <?= htmlspecialchars($c->fullName()) ?>
                     </option>
                     <?php endforeach; ?>
                 </select>

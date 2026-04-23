@@ -10,9 +10,7 @@
         <?php endforeach; ?>
     </select>
     <button type="submit">Filter</button>
-    <?php if ($status): ?>
-        <a href="/orders">Clear</a>
-    <?php endif; ?>
+    <?php if ($status): ?><a href="/orders">Clear</a><?php endif; ?>
 </form>
 
 <table>
@@ -22,12 +20,12 @@
     <tbody>
         <?php foreach ($orders as $o): ?>
         <tr>
-            <td><?= (int)$o['id'] ?></td>
-            <td><?= htmlspecialchars($o['customer_name'] ?? '—') ?></td>
-            <td><?= htmlspecialchars($o['order_date'] ?? '—') ?></td>
-            <td><?= htmlspecialchars($o['delivery_date'] ?? '—') ?></td>
-            <td><?= htmlspecialchars($o['status'] ?? '—') ?></td>
-            <td><?= htmlspecialchars($o['comment'] ?? '') ?></td>
+            <td><?= $o->id ?></td>
+            <td><?= htmlspecialchars($o->customer_name ?? '—') ?></td>
+            <td><?= htmlspecialchars($o->order_date ?? '—') ?></td>
+            <td><?= htmlspecialchars($o->delivery_date ?? '—') ?></td>
+            <td><?= htmlspecialchars($o->status ?? '—') ?></td>
+            <td><?= htmlspecialchars($o->comment ?? '') ?></td>
         </tr>
         <?php endforeach; ?>
     </tbody>

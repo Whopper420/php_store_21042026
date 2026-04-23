@@ -1,6 +1,25 @@
 <?php
 class Order
 {
+    public int $id;
+    public int $customer_id;
+    public ?string $status;
+    public ?string $order_date;
+    public ?string $delivery_date;
+    public ?string $comment;
+    public ?string $customer_name;
+
+    public function __construct(array $row)
+    {
+        $this->id            = (int)$row['id'];
+        $this->customer_id   = (int)($row['customer_id'] ?? 0);
+        $this->status        = $row['status']        ?? null;
+        $this->order_date    = $row['order_date']    ?? null;
+        $this->delivery_date = $row['delivery_date'] ?? null;
+        $this->comment       = $row['comment']       ?? null;
+        $this->customer_name = $row['customer_name'] ?? null;
+    }
+
     public static function all(string $status = ''): array
     {
         $where = '';
@@ -16,7 +35,7 @@ class Order
             ORDER BY o.order_date DESC
         ");
         $rows = [];
-        while ($row = $result->fetch_assoc()) $rows[] = $row;
+        while ($row = $result->fetch_assoc()) $rows[] = new self($row);
         return $rows;
     }
 
@@ -28,7 +47,7 @@ class Order
     public static function statuses(): array
     {
         $result = DB::query("SELECT DISTINCT status FROM orders WHERE status IS NOT NULL ORDER BY status");
-        $rows = [];
+        $rows   = [];
         while ($row = $result->fetch_assoc()) $rows[] = $row['status'];
         return $rows;
     }
