@@ -103,4 +103,10 @@ class Customer
         while ($row = $result->fetch_assoc()) $rows[] = $row;
         return $rows;
     }
+    public static function countWithOrders(): int
+    {
+        return (int)DB::query("
+            SELECT COUNT(DISTINCT customer_id) AS n FROM orders
+        ")->fetch_assoc()['n'];
+    }
 }

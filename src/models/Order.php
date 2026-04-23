@@ -74,4 +74,31 @@ class Order
         while ($row = $result->fetch_assoc()) $rows[] = $row;
         return $rows;
     }
+    public static function countByStatus(): array
+    {
+        $result = DB::query("
+            SELECT status, COUNT(*) AS n
+            FROM orders
+            WHERE status IS NOT NULL
+            GROUP BY status
+            ORDER BY status
+        ");
+        $rows = [];
+        while ($row = $result->fetch_assoc()) $rows[$row['status']] = $row['n'];
+        return $rows;
+    }
+
+    public static function latest(): ?string
+    {
+        $result = DB::query("
+            SELECT o.order_date, CONCAT(c.first_name, ' ', c.last_name) AS customer_name
+            FROM orders o
+            LEFT JOIN customers c ON c.id = o.customer_id
+            ORDER BY o.order_date DESC
+            LIMIT 1
+        ");
+        $row = $result->fetch_assoc();
+        if (!$row) return null;
+        return $row['order_date'] . ' — ' . $row['customer_name'];
+    }
 }

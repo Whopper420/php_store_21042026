@@ -29,7 +29,7 @@
     <input type="text" name="q" value="<?= htmlspecialchars($search) ?>" placeholder="Search…">
     <button type="submit">Search</button>
     <a href="/customers?with-orders=full">Show with orders</a>
-    <a href="/export/customers">Export CSV</a>
+    <a href="/export/customers">Export</a>
 </form>
 
 <form method="POST" action="/customers/add" style="margin-bottom:16px">
