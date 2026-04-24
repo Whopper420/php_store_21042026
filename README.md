@@ -57,18 +57,20 @@ CREATE DATABASE store_dev;
 USE store_dev;
 
 CREATE TABLE customers (
-    id         INT AUTO_INCREMENT PRIMARY KEY,
-    first_name VARCHAR(80)  NOT NULL,
-    last_name  VARCHAR(80)  NOT NULL,
-    email      VARCHAR(160) NOT NULL
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(100),
+    last_name VARCHAR(100),
+    email VARCHAR(150),
+    birth_date DATE,
+    points INT DEFAULT 0
 );
 
 CREATE TABLE orders (
-    id            INT AUTO_INCREMENT PRIMARY KEY,
-    customer_id   INT,
-    order_date    DATE,
-    status        VARCHAR(50),
-    comment       TEXT,
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    customer_id INT,
+    order_date DATE,
+    status VARCHAR(50),
+    comment TEXT,
     delivery_date DATE,
     FOREIGN KEY (customer_id) REFERENCES customers(id)
 );
